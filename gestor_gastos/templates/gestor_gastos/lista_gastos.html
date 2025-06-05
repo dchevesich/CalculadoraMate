@@ -1,0 +1,196 @@
+{% extends 'gestor_gastos/base.html' %}
+{% load l10n %}
+
+{% block title %}Resumen de Mis Gastos{% endblock %}
+
+{% block content %}
+    <h2>Resumen de Mis Gastos</h2>
+    <p>Aquí puedes ver un análisis de todos los gastos que has anotado.</p>
+
+    {# Formulario de Filtro de Mes/Año #}
+    <div class="filtro-gastos-container">
+        <form method="get" action="{% url 'lista_gastos' %}">
+            <label for="mes">Mes:</label>
+            <select name="mes" id="mes">
+                {% for num, nombre in nombres_meses %}
+                    <option value="{{ num }}" {% if num|stringformat:"s" == mes_seleccionado %}selected{% endif %}>{{ nombre }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="anio">Año:</label>
+            <select name="anio" id="anio">
+                {% for anio in rango_anios %}
+                    <option value="{{ anio }}" {% if anio|stringformat:"s" == anio_seleccionado %}selected{% endif %}>{{ anio }}</option>
+                {% endfor %}
+            </select>
+
+            <button type="submit" class="boton-filtro">Filtrar</button>
+        </form>
+    </div>
+
+    {# Resumen Total Gastado #}
+    <div class="resumen-total">
+        <h3>Total Gastado en {% for num, nombre in nombres_meses %}{% if num|stringformat:"s" == mes_seleccionado %}{{ nombre }}{% endif %}{% endfor %} de {{ anio_seleccionado }}:</h3>
+        <p class="monto-total">$ {{ total_mes }}</p>
+    </div>
+
+    {# Sección de Análisis: Desglose y Gráfico #}
+    <div class="seccion-analisis">
+        <div class="desglose-categorias">
+            <h4>Desglose por Categoría:</h4>
+            {% if gastos_por_categoria %}
+                <ul>
+                    {% for desglose in gastos_por_categoria %}
+                        <li>
+                            <span>{{ desglose.categoria__nombre }}</span>
+                            <span class="monto-categoria">$ {{ desglose.total }}</span>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No hay gastos registrados para este mes y año en ninguna categoría.</p>
+            {% endif %}
+        </div>
+        <div class="contenedor-grafico">
+            <h4>Distribución Gráfica:</h4>
+            {% if data_grafico|length > 2 %}
+                <div style="position: relative; height: 400px; width: 100%;">
+                    <canvas id="gastosChart"></canvas>
+                </div>
+            {% else %}
+                <p>No hay datos suficientes para generar el gráfico de distribución.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <hr class="separador">
+    
+    <h3>Detalle de Todos los Gastos ({{ gastos|length }} Registros):</h3>
+    {% if gastos %}
+        <table class="tabla-gastos">
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Categoría</th>
+                    <th>Descripción</th>
+                    <th>Monto</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for gasto in gastos %}
+                    <tr>
+                        <td>{{ gasto.fecha|date:"d/m/Y" }}</td>
+                        <td>{{ gasto.categoria.nombre }}</td>
+                        <td>{{ gasto.descripcion|default:"Sin descripción" }}</td>
+                        <td class="monto-gasto">$ {{ gasto.monto }}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="4">No hay gastos registrados para el mes y año seleccionado.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No hay gastos registrados para el mes y año seleccionado.</p>
+    {% endif %}
+
+    <div class="acciones-lista">
+        <a href="{% url 'principal_gastos' %}" class="link-accion">← Volver a la página principal</a>
+    </div>
+
+{% endblock %}
+
+{% block scripts %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> 
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const canvasElement = document.getElementById('gastosChart');
+            
+            if (canvasElement) {
+                const ctx = canvasElement.getContext('2d');
+                
+                // CAMBIO PRINCIPAL: Recibir los datos directamente desde Django sin json_script
+                const chartNombresCategorias = {{ labels_grafico|safe }};
+                const chartMontosCategorias = {{ data_grafico|safe }};
+                
+                console.log('Labels:', chartNombresCategorias);
+                console.log('Data:', chartMontosCategorias);
+                
+                // Verificar que los datos sean arrays válidos
+                if (Array.isArray(chartNombresCategorias) && Array.isArray(chartMontosCategorias) && 
+                    chartNombresCategorias.length > 0 && chartMontosCategorias.length > 0) {
+                    
+                    // Colores para el gráfico
+                    const backgroundColors = [
+                        '#63B8B8', '#E7625F', '#4A6D7C', '#FFD166', '#8DCCAD',
+                        '#C7CEEA', '#F7B538', '#76A08A', '#B0D8A4', '#F2EFEA'
+                    ];
+                    
+                    try {
+                        new Chart(ctx, {
+                            type: 'pie',
+                            data: {
+                                labels: chartNombresCategorias,
+                                datasets: [{
+                                    label: 'Gasto por Categoría',
+                                    data: chartMontosCategorias,
+                                    backgroundColor: backgroundColors.slice(0, chartNombresCategorias.length),
+                                    borderColor: backgroundColors.slice(0, chartNombresCategorias.length).map(color => color + 'CC'),
+                                    borderWidth: 2
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                plugins: {
+                                    legend: {
+                                        position: 'right',
+                                        labels: {
+                                            font: { size: 12 },
+                                            padding: 15
+                                        }
+                                    },
+                                    tooltip: {
+                                        callbacks: {
+                                            label: function(context) {
+                                                let label = context.label || '';
+                                                if (label) {
+                                                    label += ': ';
+                                                }
+                                                if (context.parsed !== null) {
+                                                    // Formatear como peso chileno
+                                                    const value = context.parsed;
+                                                    const formatted = new Intl.NumberFormat('es-CL', {
+                                                        style: 'currency',
+                                                        currency: 'CLP',
+                                                        minimumFractionDigits: 0,
+                                                        maximumFractionDigits: 0
+                                                    }).format(value);
+                                                    label += formatted;
+                                                }
+                                                return label;
+                                            }
+                                        }
+                                    }
+                                },
+                                layout: {
+                                    padding: 20
+                                }
+                            }
+                        });
+                    } catch (error) {
+                        console.error('Error creating chart:', error);
+                        document.getElementById('gastosChart').parentElement.innerHTML = 
+                            '<p>Error al cargar el gráfico. Revisa la consola para más detalles.</p>';
+                    }
+                } else {
+                    console.log('No hay datos válidos para el gráfico');
+                    document.getElementById('gastosChart').parentElement.innerHTML = 
+                        '<p>No hay datos suficientes para generar el gráfico.</p>';
+                }
+            }
+        });
+    </script>
+{% endblock %}

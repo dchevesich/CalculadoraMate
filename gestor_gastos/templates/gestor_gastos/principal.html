@@ -1,40 +1,31 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Calculadora de Gastos</title>
-    <link rel="stylesheet" href="{% static 'gestor_gastos/css/styles.css' %}" />
-  </head>
-  <body>
-    <header class="site-header">
-      <h1>Mi Calculadora de Gastos</h1>
-    </header>
+{% extends 'gestor_gastos/base.html' %} {% block content %} 
+{% if mensaje_bienvenida %}
+<p class="mensaje-bienvenida">{{ mensaje_bienvenida }}</p>
+{% endif %}
 
-    <main class="container">
-      {% if mensaje_bienvenida %}
-      <p class="mensaje-bienvenida">{{ mensaje_bienvenida }}</p>
-      {% endif %}
+<section class="seccion-ingreso-rapido">
+  <h2>Registrar Gasto Rápido:</h2>
+  <div class="contenedor-botones-categoria">
+    {% for categoria in categorias %}
+        <a href="{% url 'registrar_gasto' categoria_id=categoria.id %}" class="boton-categoria">
+            <span>
+                {% if categoria.nombre == "Gasto Hormiga" %}🐜
+                {% elif categoria.nombre == "Comida" %}🍔
+                {% elif categoria.nombre == "Transporte" %}🚌
+                {% elif categoria.nombre == "Cuentas Fijas" %}🧾
+                {% elif categoria.nombre == "Salidas" %}🎉
+                {% elif categoria.nombre == "Otros Gastos" %}🛍️
+                {% endif %}
+                {{ categoria.nombre }}
+            </span>
+        </a>
+    {% endfor %}
+</div>
+</section>
 
-      <section class="seccion-ingreso-rapido">
-        <h2>Registrar Gasto Rápido:</h2>
-        <div class="contenedor-botones-categoria">
-          <a href="#" class="boton-categoria" id="btn-gasto-hormiga">
-            <span>🐜 Gasto Hormiga</span>
-          </a>
-          <a href="#" class="boton-categoria" id="btn-comida">
-            <span>🍔 Comida</span>
-          </a>
-          <a href="#" class="boton-categoria" id="btn-transporte">
-            <span>🚌 Transporte</span>
-          </a>
-          <a href="#" class="boton-categoria" id="btn-cuentas-fijas">
-            <span>🧾 Cuentas Fijas</span>
-          </a>
-          <a href="#" class="boton-categoria" id="btn-salidas"></a>
-        </div>
-      </section>
-    </main>
-  </body>
-</html>
+<hr class="separador" />
+
+<section class="seccion-resumen">
+  <a href="{% url 'lista_gastos' %}" class="link-accion">Ver Resumen de Gastos</a>
+</section>
+{% endblock %}

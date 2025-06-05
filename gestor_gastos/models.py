@@ -21,8 +21,7 @@ class Categoria(models.Model):
 
 
 class Gasto(models.Model):
-    monto = models.DecimalField(
-        max_digits=10, decimal_places=2)  # Hasta 9,999,999.99
+    monto = models.DecimalField(max_digits=10, decimal_places=2)
     # Por defecto la fecha actual al crear
     fecha = models.DateField(default=timezone.now)
     # Opcional, puede estar vacío

@@ -1,0 +1,31 @@
+{% extends 'gestor_gastos/base.html' %}
+
+{% block title %}Registrar Gasto{% endblock %}
+
+{% block content %}
+    <div class="formulario-gasto-wrapper"> {# Contenedor extra para centrar el formulario #}
+        <h2>
+            Registrar Nuevo Gasto en:
+            <span class="categoria-titulo">{{ categoria.nombre }}</span>
+        </h2>
+
+        <form method="post" class="form-gasto">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="{{ form.monto.id_for_label }}">{{ form.monto.label }}:</label>
+                {{ form.monto }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.descripcion.id_for_label }}">{{ form.descripcion.label }}:</label>
+                {{ form.descripcion }}
+            </div>
+
+            <div class="form-actions"> {# Contenedor para agrupar y estilizar los botones #}
+                <button type="submit" class="boton-submit">Guardar Gasto</button>
+                <a href="{% url 'principal_gastos' %}" class="link-cancelar">Cancelar</a>
+            </div>
+        </form>
+    </div>
+{% endblock %}

@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'gestor_gastos',
+    'django.contrib.humanize'
 ]
 
 MIDDLEWARE = [
@@ -72,7 +73,7 @@ WSGI_APPLICATION = 'config_proyecto.wsgi.application'
 
 
 # Database
-# https://docs.djangoproject.com/en/5.1/ref/settings/#databases
+# https://docs.djangoproject.com/en/5.1/ref/databases
 
 DATABASES = {
     'default': {
@@ -104,12 +105,18 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
-
-TIME_ZONE = 'UTC'
-
+# Configuración de Internacionalización y Localización para Chile
+# Habilita la internacionalización (i18n) y la localización (l10n) para formatos de números y fechas
 USE_I18N = True
+USE_L10N = True
 
+# Establece el idioma predeterminado de tu proyecto a español de Chile
+LANGUAGE_CODE = 'es-cl'
+
+# Establece la zona horaria a Santiago, Chile. Asegúrate que sea la correcta para tu ubicación.
+TIME_ZONE = 'America/Santiago'
+
+# Habilita el soporte para zonas horarias
 USE_TZ = True
 
 
