@@ -1,3 +1,7 @@
 from django.shortcuts import render
+from django.http import HttpResponse
 
-# Create your views here.
+
+def pagina_principal_gastos(request):
+    contexto = {'mensaje_bienvenida': '¡Bienvenido a tu Calculadora de Gastos!'}
+    return render(request, 'gestor_gastos/principal.html', contexto)
