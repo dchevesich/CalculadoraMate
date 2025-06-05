@@ -1,0 +1,19 @@
+# Entorno Virtual
+venv/
+
+# Archivos de Bytecode de Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Base de datos de desarrollo SQLite
+db.sqlite3
+
+# Archivos de configuración de IDEs (opcional, pero buena práctica)
+.vscode/
+.idea/
+*.swp
+
+# Archivos de entorno (si usas variables de entorno en un archivo .env)
+.env
