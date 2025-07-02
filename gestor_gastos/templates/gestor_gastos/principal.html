@@ -10,11 +10,10 @@
         <a href="{% url 'registrar_gasto' categoria_id=categoria.id %}" class="boton-categoria">
             <span>
                 {% if categoria.nombre == "Gasto Hormiga" %}🐜
-                {% elif categoria.nombre == "Comida" %}🍔
                 {% elif categoria.nombre == "Transporte" %}🚌
-                {% elif categoria.nombre == "Cuentas Fijas" %}🧾
-                {% elif categoria.nombre == "Salidas" %}🎉
-                {% elif categoria.nombre == "Otros Gastos" %}🛍️
+                {% elif categoria.nombre == "Cuentas Fijas Mensuales" %}🧾
+                {% elif categoria.nombre == "Salud" %}🧑‍⚕️
+                {% elif categoria.nombre == "Otros Gastos" %}
                 {% endif %}
                 {{ categoria.nombre }}
             </span>

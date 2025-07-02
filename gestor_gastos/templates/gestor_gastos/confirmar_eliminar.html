@@ -1,0 +1,23 @@
+{% extends 'gestor_gastos/base.html' %}
+{% load l10n %} {# Necesario para formatear el monto aquí #}
+
+{% block title %}Confirmar Eliminación{% endblock %}
+
+{% block content %}
+    <div class="formulario-gasto-wrapper">
+        <h2>Confirmar Eliminación de Gasto</h2>
+        <p>¿Estás seguro que deseas eliminar el siguiente gasto?</p>
+        <p><strong>Categoría:</strong> {{ gasto.categoria.nombre }}</p>
+        <p><strong>Monto:</strong> $ {{ gasto.monto }}</p> {# Aquí ya viene formateado si usas _format_clp #}
+        <p><strong>Descripción:</strong> {{ gasto.descripcion|default:"Sin descripción" }}</p>
+        <p><strong>Fecha:</strong> {{ gasto.fecha|date:"d/m/Y" }}</p>
+
+        <form method="post" class="form-gasto">
+            {% csrf_token %}
+            <div class="form-actions" style="justify-content: center;">
+                <button type="submit" class="boton-submit" style="background-color: #dc3545;">Sí, Eliminar</button>
+                <a href="{% url 'lista_gastos' %}" class="link-cancelar" style="background-color: #6c757d;">Cancelar</a>
+            </div>
+        </form>
+    </div>
+{% endblock %}

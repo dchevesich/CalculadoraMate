@@ -128,6 +128,7 @@ def lista_gastos(request):
     gastos_para_tabla_formateados = []
     for gasto_obj in gastos_todos_registros:
         gastos_para_tabla_formateados.append({
+            'id': gasto_obj.id,
             'fecha': gasto_obj.fecha,
             'categoria': gasto_obj.categoria,
             'descripcion': gasto_obj.descripcion,
@@ -162,4 +163,45 @@ def lista_gastos(request):
         'nombres_meses': nombres_meses,
         'rango_anios': rango_anios,
     }
+    
     return render(request, 'gestor_gastos/lista_gastos.html', contexto)
+
+def eliminar_gasto(request, gasto_id):
+    gasto = get_object_or_404(Gasto, pk=gasto_id) # Obtiene el gasto o lanza 404
+
+    if request.method == 'POST':
+        gasto.delete() # Elimina el gasto de la base de datos
+        messages.success(request, 'Gasto eliminado con éxito.')
+        return redirect('lista_gastos') # Redirige a la lista de gastos actualizada
+    
+    # Si la solicitud es GET, muestra una página de confirmación
+    contexto = {
+        'gasto': gasto # Pasamos el objeto gasto para mostrar sus detalles en la confirmación
+    }
+    # Asegúrate de que este render apunte al template correcto: 'confirmar_eliminar.html'
+    return render(request, 'gestor_gastos/confirmar_eliminar.html', contexto)
+
+
+def modificar_gasto(request, gasto_id):
+    gasto = get_object_or_404(Gasto, pk=gasto_id) # Obtiene el gasto o lanza 404
+
+    if request.method == 'POST':
+        # Instancia el formulario con los datos recibidos y el objeto de gasto EXISTENTE
+        form = GastoRapidoForm(request.POST, instance=gasto)
+        if form.is_valid():
+            form.save() # Si es válido, guarda los cambios en ese mismo objeto de gasto
+            messages.success(request, 'Gasto modificado con éxito.')
+            return redirect('lista_gastos') # Redirige a la lista de gastos actualizada
+        else:
+            messages.error(request, 'Error al modificar el gasto. Por favor, revisa los datos.')
+    else:
+        # Si la solicitud es GET, instancia el formulario con los datos actuales del gasto
+        form = GastoRapidoForm(instance=gasto)
+
+    contexto = {
+        'form': form,
+        'gasto': gasto, # Pasamos el objeto gasto por si se necesita en la plantilla
+        'categoria_nombre': gasto.categoria.nombre # Para mostrar la categoría en el título de la página
+    }
+    # Asegúrate de que este render apunte al template correcto: 'modificar_gasto.html'
+    return render(request, 'gestor_gastos/modificar_gasto.html', contexto)

@@ -1,0 +1,32 @@
+{% extends 'gestor_gastos/base.html' %}
+
+{% block title %}Modificar Gasto{% endblock %}
+
+{% block content %}
+    <div class="formulario-gasto-wrapper">
+        <h2>
+            Modificar Gasto: 
+            <span class="categoria-titulo">{{ categoria_nombre }}</span>
+            <small> - {{ gasto.descripcion|default:"Sin descripción" }}</small>
+        </h2>
+
+        <form method="post" class="form-gasto">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="{{ form.monto.id_for_label }}">{{ form.monto.label }}:</label>
+                {{ form.monto }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.descripcion.id_for_label }}">{{ form.descripcion.label }}:</label>
+                {{ form.descripcion }}
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="boton-submit">Guardar Cambios</button>
+                <a href="{% url 'lista_gastos' %}" class="link-cancelar">Cancelar</a>
+            </div>
+        </form>
+    </div>
+{% endblock %}

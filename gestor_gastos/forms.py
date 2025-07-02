@@ -2,6 +2,9 @@ from django import forms
 from .models import Gasto
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
+from .models import Categoria, Gasto
 import re # Para expresiones regulares
 
 class GastoRapidoForm(forms.ModelForm):
@@ -67,3 +70,6 @@ class GastoRapidoForm(forms.ModelForm):
             raise ValidationError(_("El monto ingresado no es un número válido. Use puntos para miles y coma para decimales (ej: 20.000 o 15.500,50)."))
         except TypeError: # En caso de que monto_limpio sea None o algo inesperado
             raise ValidationError(_("El monto ingresado no es un número válido."))
+        
+        
+

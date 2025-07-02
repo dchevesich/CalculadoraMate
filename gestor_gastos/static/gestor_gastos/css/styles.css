@@ -629,3 +629,65 @@ body {
         font-size: 2rem;
     }
 }
+
+.acciones-gasto {
+    display: flex;
+    gap: 8px; /* Aumentar un poco el espacio entre los botones */
+    justify-content: center;
+    align-items: center;
+}
+
+.btn-accion-sm {
+    padding: 8px 12px; /* Aumentar el padding para que se vean más como botones */
+    border-radius: 6px; /* Un poco más redondeado */
+    text-decoration: none;
+    font-size: 0.9em; /* Ligeramente más grande y legible */
+    font-weight: bold;
+    text-align: center;
+    transition: background-color 0.2s ease-in-out, transform 0.1s ease, box-shadow 0.2s ease;
+    white-space: nowrap;
+    display: inline-flex; /* Asegura que el padding y centrado funcionen bien con el texto */
+    align-items: center;
+    justify-content: center;
+    min-width: 75px; /* Darles un ancho mínimo para consistencia */
+}
+
+.btn-modificar {
+    background-color: #4A6D7C; /* Usar el azul verdoso oscuro de tu paleta principal (header) */
+    color: white;
+    border: 1px solid #4A6D7C; /* Añadir un borde sutil del mismo color */
+}
+
+.btn-modificar:hover {
+    background-color: #3C5C6A; /* Tono más oscuro al pasar el mouse */
+    border-color: #3C5C6A;
+    transform: translateY(-1px); /* Ligero efecto de elevación */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Sombra al pasar el mouse */
+}
+
+.btn-eliminar {
+    background-color: #E7625F; /* Usar el rojo terracota de tu paleta principal (gastos) */
+    color: white;
+    border: 1px solid #E7625F; /* Añadir un borde sutil del mismo color */
+}
+
+.btn-eliminar:hover {
+    background-color: #D6524F; /* Tono más oscuro al pasar el mouse */
+    border-color: #D6524F;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Opcional: Estilo para un botón secundario (si quieres un tercer botón o diferente estilo) */
+.btn-accion-sm.btn-secondary {
+    background-color: #BDC3C7; /* Gris claro */
+    color: #555;
+    border: 1px solid #BDC3C7;
+}
+
+.btn-accion-sm.btn-secondary:hover {
+    background-color: #A9B2B9;
+    border-color: #A9B2B9;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
